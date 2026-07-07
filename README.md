@@ -1,8 +1,16 @@
 # ContentViewPro
 
-ContentViewPro is a local-first desktop app for reviewing AI-generated content drafts paragraph by paragraph. It gives a human reviewer a focused workspace to approve good paragraphs, leave revision notes, reorder sections, and submit structured feedback that an external writing agent can read.
+[![Release](https://img.shields.io/github/v/release/tobyrosen/contentviewpro?sort=semver&display_name=tag&label=release&style=flat-square)](https://github.com/tobyrosen/contentviewpro/releases/latest) [![CI](https://img.shields.io/github/actions/workflow/status/tobyrosen/contentviewpro/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/tobyrosen/contentviewpro/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/tobyrosen/contentviewpro?label=license&style=flat-square)](LICENSE) [![Type](https://img.shields.io/badge/type-standalone--software-3776ab?style=flat-square)](#) [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey?style=flat-square)](#)
+
+Local-first desktop review for AI-generated drafts, built for paragraph-level human feedback.
+
+ContentViewPro gives reviewers a focused workspace to approve good paragraphs, leave revision notes, reorder sections, and submit structured feedback that an external writing agent can read.
 
 The app does not call an AI model. Drafts, review state, and submitted feedback stay on your filesystem.
+
+## Why ContentViewPro
+
+Content review often breaks down when feedback lives in chat threads, comments, and one-off notes. ContentViewPro keeps the review loop file-based and repeatable: drafts go in, paragraph decisions and revision notes come out as structured JSON.
 
 ## Features
 
@@ -93,6 +101,14 @@ and `data/reviews/`; set `CVP_DATA_DIR` to use another workspace folder.
 ## Agent Integration
 
 See [PROTOCOL.md](./PROTOCOL.md) for the file formats and review-cycle contract used by writing agents.
+
+## Releases
+
+Versions are cut automatically by release-please after Conventional Commit messages are merged to `main`. Download built desktop apps from the [Releases](https://github.com/tobyrosen/contentviewpro/releases) page.
+
+## Contributing
+
+Issues and pull requests are welcome. Use Conventional Commits for PR titles and commits because release-please uses them to determine version bumps and changelog entries.
 
 ## License
 
