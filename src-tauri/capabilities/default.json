@@ -1,0 +1,28 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/schema/capabilities.json",
+  "identifier": "default",
+  "description": "Default permissions for ContentViewPro",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "dialog:allow-open",
+    {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [{ "path": "$HOME/**" }]
+    },
+    {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [{ "path": "$HOME/**" }]
+    },
+    { "identifier": "fs:allow-read-dir", "allow": [{ "path": "$HOME/**" }] },
+    { "identifier": "fs:allow-exists", "allow": [{ "path": "$HOME/**" }] },
+    { "identifier": "fs:allow-mkdir", "allow": [{ "path": "$HOME/**" }] },
+    { "identifier": "fs:allow-watch", "allow": [{ "path": "$HOME/**" }] },
+    { "identifier": "fs:allow-unwatch", "allow": [{ "path": "$HOME/**" }] },
+    "store:allow-get",
+    "store:allow-set",
+    "store:allow-load",
+    "store:allow-save",
+    "shell:allow-open"
+  ]
+}

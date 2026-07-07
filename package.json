@@ -1,0 +1,58 @@
+{
+  "name": "contentviewpro",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"tsx watch server/index.ts\" \"vite\"",
+    "dev:frontend": "vite",
+    "lint": "eslint .",
+    "build": "vite build",
+    "test": "tsc --noEmit",
+    "start": "tsx server/index.ts",
+    "server": "tsx watch server/index.ts",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2.7.1",
+    "@tauri-apps/plugin-fs": "^2.5.1",
+    "@tauri-apps/plugin-store": "^2.4.3",
+    "chokidar": "^4.0.3",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "gray-matter": "^4.0.3",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.15.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.17.0",
+    "@tailwindcss/vite": "^4.3.0",
+    "@tauri-apps/cli": "^2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^6.0.2",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.1.2",
+    "eslint": "9.17.0",
+    "eslint-config-prettier": "9.1.0",
+    "tailwindcss": "^4.1.4",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "8.60.1",
+    "vite": "^8.0.14"
+  },
+  "overrides": {
+    "@eslint/plugin-kit": "^0.3.4"
+  }
+}

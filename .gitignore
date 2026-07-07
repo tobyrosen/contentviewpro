@@ -1,0 +1,21 @@
+node_modules/
+dist/
+
+# Working data — local only, never committed
+drafts/
+reviews/
+state/
+archive/
+
+# Screenshots and test artifacts (but keep app icons)
+*.png
+!src-tauri/icons/*.png
+*.jpg
+.playwright-mcp/
+
+# Tauri / Rust build artifacts
+src-tauri/target/
+src-tauri/gen/
+
+# OS
+.DS_Store
