@@ -23,7 +23,7 @@
     "@tauri-apps/plugin-dialog": "^2.7.1",
     "@tauri-apps/plugin-fs": "^2.5.1",
     "@tauri-apps/plugin-store": "^2.4.3",
-    "chokidar": "^4.0.3",
+    "chokidar": "^5.0.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "gray-matter": "^4.0.3",
