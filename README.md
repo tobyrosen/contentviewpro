@@ -106,6 +106,11 @@ See [PROTOCOL.md](./PROTOCOL.md) for the file formats and review-cycle contract 
 
 Versions are cut automatically by release-please after Conventional Commit messages are merged to `main`. Download built desktop apps from the [Releases](https://github.com/tobyrosen/contentviewpro/releases) page.
 
+## Roadmap
+
+- Packaged, installer-based desktop builds for macOS and Windows, distributed alongside the existing releases
+- A mobile companion app for on-the-go review
+
 ## Contributing
 
 Issues and pull requests are welcome. Use Conventional Commits for PR titles and commits because release-please uses them to determine version bumps and changelog entries.
