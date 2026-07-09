@@ -1,6 +1,6 @@
 [package]
 name = "contentviewpro"
-version = "0.1.0"
+version = "0.2.0"
 description = "ContentViewPro - paragraph review desktop app"
 authors = ["Rosen Advertising"]
 edition = "2021"
