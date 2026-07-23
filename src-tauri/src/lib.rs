@@ -75,12 +75,12 @@ impl LanState {
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 fn parse_draft(content: &str) -> (HashMap<String, Value>, Vec<Paragraph>) {
+    let normalized = content.replace("\r\n", "\n");
     let mut meta = HashMap::new();
-    let body: &str;
+    let mut body = normalized.as_str();
 
-    if content.starts_with("---\n") || content.starts_with("---\r\n") {
-        let rest = &content[4..];
-        if let Some(end) = rest.find("\n---\n").or_else(|| rest.find("\n---\r\n")) {
+    if let Some(rest) = body.strip_prefix("---\n") {
+        if let Some(end) = rest.find("\n---\n") {
             let yaml = &rest[..end];
             body = &rest[end + 5..];
             if let Ok(Value::Object(map)) = serde_yaml::from_str::<Value>(yaml) {
@@ -88,21 +88,31 @@ fn parse_draft(content: &str) -> (HashMap<String, Value>, Vec<Paragraph>) {
                     meta.insert(key, v);
                 }
             }
-        } else {
-            body = content;
         }
-    } else {
-        body = content;
     }
 
-    let paragraphs = body
-        .split("\n\n")
-        .map(|p| p.trim())
-        .filter(|p| !p.is_empty())
+    let mut blocks = Vec::new();
+    let mut current = Vec::new();
+    for line in body.lines() {
+        if line.trim().is_empty() {
+            if !current.is_empty() {
+                blocks.push(current.join("\n"));
+                current.clear();
+            }
+        } else {
+            current.push(line);
+        }
+    }
+    if !current.is_empty() {
+        blocks.push(current.join("\n"));
+    }
+
+    let paragraphs = blocks
+        .into_iter()
         .enumerate()
         .map(|(index, text)| Paragraph {
             index,
-            text: text.to_string(),
+            text: text.trim().to_string(),
         })
         .collect();
 
@@ -128,6 +138,20 @@ fn validate_id(id: &str) -> bool {
         && id
             .chars()
             .all(|c| c.is_alphanumeric() || c == '-' || c == '_')
+}
+
+fn finalize_review(state: &mut ReviewState) -> Result<(), String> {
+    if state.submitted {
+        return Err("Already submitted".to_string());
+    }
+
+    for paragraph in &mut state.paragraphs {
+        if paragraph.status == "approved" {
+            paragraph.notes = None;
+        }
+    }
+    state.submitted = true;
+    Ok(())
 }
 
 fn get_workspace(app: &tauri::AppHandle) -> Result<PathBuf, String> {
@@ -320,16 +344,7 @@ async fn core_submit_review(app: &tauri::AppHandle, id: &str) -> Result<(), Stri
         serde_json::from_str(&std::fs::read_to_string(&state_path).map_err(|e| e.to_string())?)
             .map_err(|e| e.to_string())?;
 
-    if state.submitted {
-        return Err("Already submitted".to_string());
-    }
-
-    for p in &mut state.paragraphs {
-        if p.status == "approved" {
-            p.notes = None;
-        }
-    }
-    state.submitted = true;
+    finalize_review(&mut state)?;
     atomic_write(
         &state_path,
         &serde_json::to_string_pretty(&state).map_err(|e| e.to_string())?,
@@ -526,4 +541,86 @@ pub fn run() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_draft_normalizes_frontmatter_and_paragraphs() {
+        let content = concat!(
+            "---\r\n",
+            "title: Review me\r\n",
+            "round: 3\r\n",
+            "---\r\n",
+            "\r\n",
+            "First line\r\n",
+            "continues here.\r\n",
+            "   \r\n",
+            "Second paragraph.\r\n",
+        );
+
+        let (meta, paragraphs) = parse_draft(content);
+
+        assert_eq!(meta_str(&meta, "title"), "Review me");
+        assert_eq!(meta_u32(&meta, "round", 1), 3);
+        assert_eq!(paragraphs.len(), 2);
+        assert_eq!(paragraphs[0].index, 0);
+        assert_eq!(paragraphs[0].text, "First line\ncontinues here.");
+        assert_eq!(paragraphs[1].text, "Second paragraph.");
+    }
+
+    #[test]
+    fn parse_draft_without_frontmatter_keeps_nonempty_blocks() {
+        let (_, paragraphs) = parse_draft("Opening\nwrapped\n\n\nClosing\n");
+
+        assert_eq!(paragraphs.len(), 2);
+        assert_eq!(paragraphs[0].text, "Opening\nwrapped");
+        assert_eq!(paragraphs[1].text, "Closing");
+    }
+
+    #[test]
+    fn article_ids_reject_path_traversal_and_empty_values() {
+        for valid in ["draft-1", "client_round_2", "Article42"] {
+            assert!(validate_id(valid), "{valid} should be valid");
+        }
+        for invalid in ["", ".", "../draft", "draft/name", "draft name"] {
+            assert!(!validate_id(invalid), "{invalid} should be invalid");
+        }
+    }
+
+    #[test]
+    fn finalizing_review_clears_only_approved_notes_and_is_one_way() {
+        let mut state = ReviewState {
+            article_id: "draft-1".to_string(),
+            paragraphs: vec![
+                ParagraphState {
+                    index: 0,
+                    original: "Approved text".to_string(),
+                    status: "approved".to_string(),
+                    notes: Some("stale note".to_string()),
+                },
+                ParagraphState {
+                    index: 1,
+                    original: "Needs work".to_string(),
+                    status: "revised".to_string(),
+                    notes: Some("keep this note".to_string()),
+                },
+            ],
+            order: vec![1, 0],
+            submitted: false,
+        };
+
+        finalize_review(&mut state).expect("first submission should succeed");
+
+        assert!(state.submitted);
+        assert_eq!(state.paragraphs[0].notes, None);
+        assert_eq!(state.paragraphs[1].notes.as_deref(), Some("keep this note"),);
+        assert_eq!(state.order, vec![1, 0]);
+        assert_eq!(
+            finalize_review(&mut state),
+            Err("Already submitted".to_string()),
+        );
+    }
 }

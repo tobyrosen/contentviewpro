@@ -95,7 +95,9 @@ and `data/reviews/`; set `CVP_DATA_DIR` to use another workspace folder.
 - `npm run tauri:dev` - start the Tauri desktop app in development mode
 - `npm run build` - build the Vite frontend
 - `npm run lint` - run ESLint
-- `npm test` - run TypeScript type checking
+- `npm test` - run Rust core unit tests and TypeScript type checking
+- `npm run test:gate` - run core tests, type checking, the frontend build, and
+  a Rust library compile check
 - `npm run tauri:build` - build the desktop app
 
 ## Agent Integration
