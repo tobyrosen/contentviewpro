@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "test": "npm run test:core && npm run typecheck",
+    "test": "npm run typecheck && vite build",
     "test:core": "cargo test --locked --manifest-path src-tauri/Cargo.toml --lib",
     "build:check": "npm run typecheck && vite build && cargo check --locked --manifest-path src-tauri/Cargo.toml --lib",
     "test:gate": "npm run test:core && npm run build:check",

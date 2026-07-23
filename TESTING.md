@@ -7,6 +7,11 @@ npm ci
 npm run test:gate
 ```
 
+`npm test` in CI runs the TypeScript typecheck and Vite build only: the
+hosted runners lack the GTK system libraries the Tauri Rust crate needs to
+compile. The full gate (`test:gate`, including `cargo test`) runs locally
+and on the MrFixCode box, where those libraries exist.
+
 The gate unit-tests the Tauri core's Markdown/frontmatter parsing, article ID
 validation, and review-finalization invariant. It also type-checks the
 TypeScript frontend and server, builds the Vite frontend, and compile-checks
