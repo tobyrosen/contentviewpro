@@ -1,0 +1,6 @@
+# OSV-Scanner allowlist (read by fleet-ci's dependency-scan via --config).
+# Entries must carry a reason and an owner review date.
+
+[[IgnoredVulns]]
+id = "GHSA-qwww-vcr4-c8h2"
+reason = "react-router SSR spoofing issue; fix exists only in react-router 8.3.0 (major). This is a client-side Tauri SPA with no SSR surface. Re-evaluate at the react-router v8 migration. (2026-07-31)"
