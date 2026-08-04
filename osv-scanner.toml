@@ -1,0 +1,74 @@
+# OSV-Scanner allowlist (read by fleet-ci's dependency-scan via --config).
+# These advisories have no compatible fix in Tauri v2's Linux GTK3 graph.
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0370"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0411"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0412"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0413"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0414"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0415"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0416"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0417"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0418"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0419"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0420"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0429"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2025-0075"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2025-0080"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2025-0081"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2025-0098"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2025-0100"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
+
+[[IgnoredVulns]]
+id = "GHSA-qwww-vcr4-c8h2"
+reason = "react-router SSR spoofing issue; fix exists only in react-router 8.3.0 (major). This app is a client-side Tauri/SPA router with no SSR surface — same posture as contentviewer (approved Toby 2026-07-31, reaffirmed 2026-08-04). Re-evaluate at the react-router v8 migration; REVISIT 2026-11-01."
