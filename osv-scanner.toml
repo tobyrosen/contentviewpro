@@ -1,79 +1,74 @@
 # OSV-Scanner allowlist (read by fleet-ci's dependency-scan via --config).
-# Entries must carry a reason and an owner review date.
-#
-# Rust block (owner-approved 2026-07-31): all transitive via Tauri 2.x's Linux
-# GTK3 dependency graph. 16 are unmaintained-crate notices with NO fixed
-# version; glib's 0.20 fix cannot satisfy Tauri's GTK 0.18 graph. Re-evaluate
-# when Tauri moves off GTK3 (review date 2026-10-31).
+# These advisories have no compatible fix in Tauri v2's Linux GTK3 graph.
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0370"
-reason = "proc-macro-error 1.0.4, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0411"
-reason = "gdkwayland-sys 0.18.2, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0412"
-reason = "gdk 0.18.2, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0413"
-reason = "atk 0.18.2, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0414"
-reason = "gdkx11-sys 0.18.2, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0415"
-reason = "gtk 0.18.2, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0416"
-reason = "atk-sys 0.18.2, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0417"
-reason = "gdkx11 0.18.2, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0418"
-reason = "gdk-sys 0.18.2, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0419"
-reason = "gtk3-macros 0.18.2, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0420"
-reason = "gtk-sys 0.18.2, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2024-0429"
-reason = "glib 0.18.5, transitive via Tauri GTK3 stack; fix 0.20.0 incompatible with Tauri's GTK 0.18 graph. Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2025-0075"
-reason = "unic-char-range 0.9.0, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2025-0080"
-reason = "unic-common 0.9.0, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2025-0081"
-reason = "unic-char-property 0.9.0, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2025-0098"
-reason = "unic-ucd-version 0.9.0, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "RUSTSEC-2025-0100"
-reason = "unic-ucd-ident 0.9.0, transitive via Tauri GTK3 stack; no fixed version exists (unmaintained crate). Review 2026-10-31. (2026-07-31)"
+reason = "unmaintained GTK3 bindings pulled by tauri v2 linux target, no fixed version; approved Toby 2026-08-04; REVISIT 2026-11-01"
 
 [[IgnoredVulns]]
 id = "GHSA-qwww-vcr4-c8h2"
-reason = "react-router SSR spoofing issue; fix exists only in react-router 8.3.0 (major). This is a client-side Tauri SPA with no SSR surface. Re-evaluate at the react-router v8 migration. (2026-07-31)"
+reason = "react-router SSR spoofing issue; fix exists only in react-router 8.3.0 (major). This app is a client-side Tauri/SPA router with no SSR surface — same posture as contentviewer (approved Toby 2026-07-31, reaffirmed 2026-08-04). Re-evaluate at the react-router v8 migration."

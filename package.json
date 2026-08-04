@@ -57,11 +57,18 @@
     "body-parser": "2.3.0",
     "js-yaml@4.2.0": "4.3.0",
     "shell-quote": "1.9.0",
-    "minimatch@3.1.2": {
-      "brace-expansion": "1.1.16"
+    "eslint": {
+      "minimatch": "3.1.5",
+      "@eslint/config-array": {
+        "minimatch": "3.1.5"
+      }
     },
-    "minimatch@10.2.5": {
-      "brace-expansion": "5.0.8"
-    }
+    "minimatch@3.1.5": {
+      "brace-expansion": "1.1.18"
+    },
+    "minimatch@10.2.6": {
+      "brace-expansion": "5.0.9"
+    },
+    "postcss@8.5.16": "8.5.23"
   }
 }
