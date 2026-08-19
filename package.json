@@ -59,7 +59,7 @@
   "overrides": {
     "@eslint/plugin-kit": "^0.3.4",
     "body-parser": "2.3.0",
-    "js-yaml@4.2.0": "4.3.0",
+    "js-yaml@4.2.0": "4.3.1",
     "shell-quote": "1.9.0",
     "eslint": {
       "minimatch": "3.1.5",
