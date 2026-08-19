@@ -63,6 +63,18 @@ function validateId(id: string): boolean {
   return /^[a-zA-Z0-9_-]+$/.test(id);
 }
 
+// Resolve a filename inside one of the data directories and refuse anything
+// that escapes it. validateId already rejects "." and "/", so this is defence
+// in depth: it makes the containment guarantee local to the filesystem call
+// instead of depending on a validator several lines away that a future edit
+// could move, weaken, or forget on a new route.
+function resolveWithin(root: string, filename: string): string | null {
+  const base = path.resolve(root);
+  const target = path.resolve(base, filename);
+  if (target !== base && !target.startsWith(base + path.sep)) return null;
+  return target;
+}
+
 function parseDraft(content: string): {
   meta: Record<string, any>;
   paragraphs: Paragraph[];
@@ -184,9 +196,9 @@ app.get("/api/articles/:id", async (req, res) => {
 
   try {
     const filename = `${id}.md`;
-    const filepath = path.join(DRAFTS_DIR, filename);
+    const filepath = resolveWithin(DRAFTS_DIR, filename);
 
-    if (!existsSync(filepath)) {
+    if (!filepath || !existsSync(filepath)) {
       res.status(404).json({ error: "Article not found" });
       return;
     }
@@ -273,18 +285,20 @@ app.post("/api/articles/:id/submit", async (req, res) => {
       order: state.order,
     };
 
-    const draftPath = path.join(DRAFTS_DIR, `${id}.md`);
-    if (existsSync(draftPath)) {
+    const draftPath = resolveWithin(DRAFTS_DIR, `${id}.md`);
+    if (draftPath && existsSync(draftPath)) {
       const content = await fs.readFile(draftPath, "utf-8");
       const { meta } = parseDraft(content);
       if (meta.round) review.round = meta.round;
     }
 
-    await fs.writeFile(
-      path.join(REVIEWS_DIR, `${id}.json`),
-      JSON.stringify(review, null, 2),
-    );
-    res.json({ ok: true, reviewPath: path.join(REVIEWS_DIR, `${id}.json`) });
+    const reviewPath = resolveWithin(REVIEWS_DIR, `${id}.json`);
+    if (!reviewPath) {
+      res.status(400).json({ error: "Invalid article ID" });
+      return;
+    }
+    await fs.writeFile(reviewPath, JSON.stringify(review, null, 2));
+    res.json({ ok: true, reviewPath });
   } catch (err) {
     console.error(`POST /api/articles/${id}/submit`, err);
     res.status(500).json({ error: "Failed to submit review" });
