@@ -11,3 +11,4 @@ on:
 jobs:
   ci:
     uses: tobyrosen/oss-workflows/.github/workflows/ci.yml@v1
+# CI verification run 2026-08-19 — exercises tobyrosen/oss-workflows@v1 with Semgrep blocking. This PR is closed unmerged.
