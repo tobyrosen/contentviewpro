@@ -1,7 +1,6 @@
 import { useEffect, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { invoke } from "@tauri-apps/api/core";
-import type { UnwatchFn } from "@tauri-apps/plugin-fs";
 import { fetchArticles, type ArticleSummary } from "../lib/api";
 
 const IS_TAURI = Boolean(
@@ -23,39 +22,16 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Watch drafts dir in Tauri and auto-refresh on file changes
+  // Refresh through the narrow article command; the renderer has no filesystem access.
   useEffect(() => {
     if (!IS_TAURI) return;
-    let unwatch: UnwatchFn | undefined;
-    let debounce: ReturnType<typeof setTimeout>;
-
-    (async () => {
-      const [{ Store }, { watch }] = await Promise.all([
-        import("@tauri-apps/plugin-store"),
-        import("@tauri-apps/plugin-fs"),
-      ]);
-      const store = await Store.load("settings.json");
-      const workspace = await store.get<string>("workspacePath");
-      if (!workspace) return;
-
-      unwatch = await watch(
-        `${workspace}/drafts`,
-        () => {
-          clearTimeout(debounce);
-          debounce = setTimeout(refresh, 300);
-        },
-        { recursive: false },
-      );
-    })();
-
-    return () => {
-      clearTimeout(debounce);
-      unwatch?.();
-    };
+    const timer = setInterval(refresh, 2000);
+    return () => clearInterval(timer);
   }, [refresh]);
 
   const [lanUrl, setLanUrl] = useState<string | null>(null);
   const [lanBusy, setLanBusy] = useState(false);
+  const [allInterfaces, setAllInterfaces] = useState(false);
   const LAN_PORT = 3034;
 
   useEffect(() => {
@@ -72,8 +48,10 @@ export default function Dashboard() {
         await invoke("stop_lan_server");
         setLanUrl(null);
       } else {
+        if (allInterfaces && !window.confirm("This exposes reviews over plaintext HTTP to devices on your network. Continue only on a trusted network.")) return;
         const url = await invoke<string>("start_lan_server", {
           port: LAN_PORT,
+          allInterfaces,
         });
         setLanUrl(url);
       }
@@ -94,38 +72,62 @@ export default function Dashboard() {
         >
           ContentViewPro
         </h1>
-        {IS_TAURI && (
-          <div className="flex items-center gap-3 mt-1">
-            {lanUrl && (
-              <span
-                className="text-xs font-mono"
-                style={{ color: "var(--color-text-muted)" }}
-              >
-                {lanUrl}
-              </span>
-            )}
+        <div className="flex items-center gap-3 mt-1">
+          {!IS_TAURI && (
             <button
-              onClick={toggleLan}
-              disabled={lanBusy}
-              className="px-3 py-1 rounded text-xs font-medium transition-colors disabled:opacity-40"
+              onClick={() => navigate("/insights")}
+              className="px-3 py-1 rounded text-xs font-medium transition-colors"
               style={{
-                background: lanUrl
-                  ? "var(--color-border)"
-                  : "var(--color-surface)",
-                color: lanUrl
-                  ? "var(--color-revised)"
-                  : "var(--color-text-muted)",
+                background: "var(--color-surface)",
+                color: "var(--color-text-muted)",
                 border: `1px solid var(--color-border)`,
               }}
             >
-              {lanBusy ? "..." : lanUrl ? "Stop LAN" : "LAN"}
+              Insights
             </button>
-          </div>
-        )}
+          )}
+          {IS_TAURI && (
+            <>
+              {lanUrl && (
+                <span
+                  className="text-xs font-mono"
+                  style={{ color: "var(--color-text-muted)" }}
+                >
+                  {lanUrl}
+                </span>
+              )}
+              {!lanUrl && <label className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+                <input type="checkbox" checked={allInterfaces} onChange={(e) => setAllInterfaces(e.target.checked)} />
+                {" "}Allow other devices (trusted network only)
+              </label>}
+              <button
+                onClick={toggleLan}
+                disabled={lanBusy}
+                className="px-3 py-1 rounded text-xs font-medium transition-colors disabled:opacity-40"
+                style={{
+                  background: lanUrl
+                    ? "var(--color-border)"
+                    : "var(--color-surface)",
+                  color: lanUrl
+                    ? "var(--color-revised)"
+                    : "var(--color-text-muted)",
+                  border: `1px solid var(--color-border)`,
+                }}
+              >
+                {lanBusy ? "..." : lanUrl ? "Stop LAN" : "LAN"}
+              </button>
+            </>
+          )}
+        </div>
       </div>
       <p className="mb-8" style={{ color: "var(--color-text-muted)" }}>
         Paragraph-by-paragraph content review
       </p>
+      {IS_TAURI && (allInterfaces || (lanUrl && !lanUrl.includes("127.0.0.1"))) && (
+        <p className="mb-4 text-sm" role="alert" style={{ color: "var(--color-revised)" }}>
+          LAN mode exposes reviews to other devices. It uses plaintext HTTP; use it only on a trusted network.
+        </p>
+      )}
 
       {loading ? (
         <p style={{ color: "var(--color-text-muted)" }}>Loading...</p>

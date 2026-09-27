@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { Store } from "@tauri-apps/plugin-store";
-
-export const STORE_FILE = "settings.json";
-export const WORKSPACE_KEY = "workspacePath";
+import { invoke } from "@tauri-apps/api/core";
 
 interface Props {
   onWorkspaceSet: (path: string) => void;
@@ -21,10 +18,7 @@ export default function FirstRun({ onWorkspaceSet }: Props) {
         title: "Choose your ContentViewPro workspace folder",
       });
       if (selected && typeof selected === "string") {
-        const store = await Store.load(STORE_FILE);
-        await store.set(WORKSPACE_KEY, selected);
-        await store.save();
-        onWorkspaceSet(selected);
+        onWorkspaceSet(await invoke<string>("set_workspace_path", { path: selected }));
       }
     } finally {
       setPicking(false);

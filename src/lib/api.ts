@@ -5,18 +5,21 @@ const IS_TAURI = Boolean(
 );
 const BASE = "/api";
 
+// Remove a token left by older releases without reading or migrating it.
+try { window.localStorage.removeItem("cvp_token"); } catch { /* storage may be unavailable */ }
+
 // --- Browser-mode auth (no-op in Tauri) ---
 
 export function getToken(): string {
-  return localStorage.getItem("cvp_token") || "";
+  return sessionStorage.getItem("cvp_token") || "";
 }
 
 export function setToken(token: string): void {
-  localStorage.setItem("cvp_token", token);
+  sessionStorage.setItem("cvp_token", token);
 }
 
 export function clearToken(): void {
-  localStorage.removeItem("cvp_token");
+  sessionStorage.removeItem("cvp_token");
 }
 
 async function authFetch(
@@ -118,4 +121,59 @@ export async function saveReviewState(
 export async function submitReview(id: string): Promise<void> {
   if (IS_TAURI) return invoke("submit_review", { id });
   await authFetch(`${BASE}/articles/${id}/submit`, { method: "POST" });
+}
+
+// --- CVP Insights: top recurring edits + voice spec ---
+
+export interface PatternExample {
+  source: string;
+  index: number;
+  original: string;
+  notes: string | null;
+}
+
+export interface RankedPattern {
+  id: string;
+  name: string;
+  count: number;
+  examples: PatternExample[];
+  // Per-pattern notes-vs-rewrites split, present once the miner tags intent.
+  note_rewrite?: Record<string, number>;
+}
+
+interface DeltaEntry {
+  pattern_id: string;
+  count: number;
+  prev?: number;
+  delta?: number;
+}
+
+export interface PatternsResponse {
+  run_ts: string | null;
+  total_files: number | null;
+  total_paragraphs: number | null;
+  total_revised: number | null;
+  model_used: string | null;
+  patterns: RankedPattern[];
+  delta: {
+    new_patterns?: DeltaEntry[];
+    rising_patterns?: DeltaEntry[];
+    stable?: DeltaEntry[];
+  } | null;
+  // 2-way headline: how often the reviewer rewrote text vs left a note.
+  note_vs_rewrite: Record<string, number> | null;
+  // 6-way edit-intent breakdown (intent_counts).
+  intent_breakdown: Record<string, number> | null;
+}
+
+// Insights is a browser/dev surface backed by the Express server; there is no
+// Tauri command for it, so these always go over HTTP.
+export async function fetchPatterns(): Promise<PatternsResponse> {
+  const res = await authFetch(`${BASE}/patterns`);
+  return res.json();
+}
+
+export async function fetchVoiceSpec(): Promise<string> {
+  const res = await authFetch(`${BASE}/voice-spec`);
+  return res.text();
 }
