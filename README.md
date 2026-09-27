@@ -19,7 +19,8 @@ Content review often breaks down when feedback lives in chat threads, comments, 
 - Autosaved in-progress review state
 - Submitted JSON review files for agent handoff
 - First-run workspace selection in the desktop app
-- Optional local review server from the desktop app
+- Optional bearer-authenticated local review API from the desktop app
+- Browser-only Insights for your own edit-pattern reports and voice guide
 
 ## How It Works
 
@@ -86,8 +87,27 @@ npm run dev
 ```
 
 Browser mode starts the local Express API on `127.0.0.1:3033` and Vite on `localhost:5173`.
-By default, the Express API reads and writes `data/drafts/`, `data/state/`,
-and `data/reviews/`; set `CVP_DATA_DIR` to use another workspace folder.
+By default, the Express API reads and writes repository-root `drafts/`, `state/`,
+and `reviews/`. Set `CVP_DATA_DIR` to use another workspace folder;
+`CVP_DATA_DIR=data` preserves the older browser workspace location.
+
+Local browser use on loopback works without authentication. Set `CVP_TOKEN`
+to enable bearer authentication; it is required when `HOST` is not loopback
+or Insights is configured. Enter the same token at browser sign-in. The token
+is kept only for the current tab and cleared after an unauthorized response.
+
+To enable Insights, set `CVP_INSIGHTS_ROOT` to an absolute directory containing
+your own reports, then set `CVP_MINER_DIR` to a relative directory of
+`run-*.json` files and/or `CVP_VOICE_SPEC` to a relative Markdown filename.
+No reports are bundled. Paths must stay inside the Insights root; symlinks
+and non-regular files are rejected. Workspace directories and files must also
+be regular, non-symlink paths.
+
+The desktop local API requires `CVP_LAN_TOKEN` in the app process environment
+and starts on `127.0.0.1`. To bind all interfaces, select **Allow other devices**
+and confirm the dashboard warning. Requests use bearer authentication. This
+mode uses plaintext HTTP: use a trusted network because a network observer
+can capture the token. The desktop API does not serve the browser frontend.
 
 ## Scripts
 
@@ -95,8 +115,8 @@ and `data/reviews/`; set `CVP_DATA_DIR` to use another workspace folder.
 - `npm run tauri:dev` - start the Tauri desktop app in development mode
 - `npm run build` - build the Vite frontend
 - `npm run lint` - run ESLint
-- `npm test` - run Rust core unit tests and TypeScript type checking
-- `npm run test:gate` - run core tests, type checking, the frontend build, and
+- `npm test` - run Node security tests, TypeScript type checking, and the frontend build
+- `npm run test:gate` - run Node and Rust tests, type checking, the frontend build, and
   a Rust library compile check
 - `npm run tauri:build` - build the desktop app
 

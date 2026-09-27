@@ -6,6 +6,7 @@ drafts/
 reviews/
 state/
 archive/
+private/
 
 # Screenshots and test artifacts (but keep app icons)
 *.png

@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import ReviewView from "./components/ReviewView";
-import FirstRun, { STORE_FILE, WORKSPACE_KEY } from "./components/FirstRun";
+import Insights from "./components/Insights";
+import FirstRun from "./components/FirstRun";
 import { getToken, setToken, clearToken } from "./lib/api";
+import { invoke } from "@tauri-apps/api/core";
 
 // True when running inside the Tauri desktop app
 const IS_TAURI = Boolean(
@@ -105,14 +107,7 @@ function WorkspaceGate({ children }: { children: React.ReactNode }) {
       setLoading(false);
       return;
     }
-    import("@tauri-apps/plugin-store").then(({ Store }) =>
-      Store.load(STORE_FILE).then((store) =>
-        store.get<string>(WORKSPACE_KEY).then((path) => {
-          setWorkspace(path ?? null);
-          setLoading(false);
-        }),
-      ),
-    );
+    invoke<string | null>("get_workspace_path").then(setWorkspace).finally(() => setLoading(false));
   }, []);
 
   if (loading) return null;
@@ -136,6 +131,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/review/:id" element={<ReviewView />} />
+              <Route path="/insights" element={<Insights />} />
             </Routes>
           </AuthGate>
         )}

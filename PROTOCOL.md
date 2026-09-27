@@ -94,7 +94,7 @@ Markdown files with YAML frontmatter. Filename should be slug-style, descriptive
 {slug}-r{round}.md
 ```
 
-Example: `negative-keywords-law-firms-r1.md`
+Example: `example-article-r1.md`
 
 ### Frontmatter
 
@@ -120,7 +120,7 @@ After the human submits, ContentViewPro writes a JSON file to `reviews/` with th
 
 ```json
 {
-  "source": "negative-keywords-law-firms-r1.md",
+  "source": "example-article-r1.md",
   "reviewedAt": "2026-04-27T06:00:00Z",
   "round": 1,
   "paragraphs": [
