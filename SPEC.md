@@ -12,12 +12,12 @@ ContentViewPro is a local-first desktop app for paragraph-by-paragraph review of
 - **Primary app logic**: Rust Tauri commands in `src-tauri/src/lib.rs` read drafts, persist review state, submit review JSON, and manage the optional local review server.
 - **Frontend**: Vite + React + TypeScript in `src/`.
 - **Browser/dev API**: Express + TypeScript in `server/index.ts`, bound to loopback by default and proxied by Vite during browser-mode development.
-- **Optional local access**: Rust `axum` server started from the desktop dashboard. It is off by default and binds to `127.0.0.1` unless `CVP_BIND_ADDR` is set.
+- **Optional local access**: Rust `axum` server started from the desktop dashboard. It is off by default, requires `CVP_LAN_TOKEN`, and binds to `127.0.0.1`. The dashboard provides a warned opt-in to bind all interfaces over plaintext HTTP.
 - **Storage**: Filesystem only. No database and no cloud account.
 
 ## Workspace Layout
 
-The desktop app asks the user to choose a workspace folder on first launch and stores that path in the Tauri app store. The workspace contains:
+The desktop app asks the user to choose a workspace folder on first launch and stores that path through narrow Rust workspace commands. The workspace contains:
 
 ```text
 workspace/
@@ -26,7 +26,7 @@ workspace/
 `-- state/           # Autosaved in-progress review state
 ```
 
-The browser-mode server uses `CVP_DATA_DIR` as its workspace root, defaulting to repo-local `data/`.
+The browser-mode server uses `CVP_DATA_DIR` as its workspace root, defaulting to the repository root. Set `CVP_DATA_DIR=data` to retain the previous default location.
 
 ## Draft Input
 
@@ -89,6 +89,8 @@ Submitted reviews are written to `reviews/{article-id}.json`:
 
 The desktop app uses Tauri commands:
 
+- `get_workspace_path`
+- `set_workspace_path`
 - `list_articles`
 - `get_article`
 - `save_state`
@@ -105,6 +107,24 @@ GET  /api/articles/:id
 PUT  /api/articles/:id/state
 POST /api/articles/:id/submit
 ```
+
+## Security and optional Insights
+
+Browser API authentication is optional for local loopback use, and required for
+non-loopback hosts or configured Insights. Browser bearer tokens use tab-scoped
+storage. Submit endpoints return only `{ "ok": true }`.
+
+Insights is browser-only. `CVP_INSIGHTS_ROOT` is an absolute root directory;
+`CVP_MINER_DIR` and `CVP_VOICE_SPEC` are paths relative to that root. Reports must
+be regular JSON files and the voice guide must be a regular Markdown file.
+
+Workspace path checks reject traversal and static symlinks. Unix Rust writes
+use directory handles. Node writes, Windows writes, and workspace reads still
+have a check/use race against a local process that can modify the workspace.
+Only use workspaces under your control.
+
+The desktop renderer uses core and folder-dialog permissions, narrow workspace
+commands, a content security policy, and bundled fonts.
 
 ## Public Release Notes
 
